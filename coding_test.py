@@ -64,7 +64,26 @@ print(group_anagram([""]))
 print(group_anagram(["a"]))
 
 #가장 긴 팰린드롬 문자
-#def longest_palindrome_substring(s):
+def longest_palindrome_substring(s):
+    def expand(left, right):
+        while left> 0 and right < len(s) - 1 and s[left:right] == s[left:right][::-1] :
+            left -= 1
+            right += 1
+        if s[left:right] == s[left:right][::-1]:
+            print(s[left:right])
+            return s[left:right]
+        return ""
+
+    result = ""
+    for i in range(len(s)):
+        result = max(result,
+                     expand(i, i+1),
+                     expand(i, i+2),
+                     key=len)
+    return result
+
+print(longest_palindrome_substring("babad"))
+print(longest_palindrome_substring("cbbd"))
 
 #7장 배열
 #두 수의 합
@@ -99,11 +118,44 @@ print(trapping_rain_water([0,1,0,2,1,0,1,3,2,1,2,1]))
 print(trapping_rain_water([4,2,0,3,2,5]))
 
 #세 수의 합
-# def three_sum(nums):
-#     nums.sort()
-#     for i in range(nums):
+def three_sum(nums):
+    nums.sort()
+    results = []
+    for i in range(len(nums)):
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+        p = nums[i]
+
+        target = nums[i + 1:]
+        left, right = 0, len(target) - 1
+        while left < right:
+            if p + target[left] + target[right] == 0:
+                results.append([p, target[left], target[right]])
+                left += 1
+                right -= 1
+            elif p + target[left] + target[right] > 0:
+                right -= 1
+            else:
+                left += 1
+
+    return results
+
+print(three_sum([-1,0,1,2,-1,-4]))
+print(three_sum([0,1,1]))
+print(three_sum([0,0,0]))
 
 
+#배열파티션
+def arrayPairSum(nums) -> int:
+    sum = 0
+    nums.sort()
+
+    for i, n in enumerate(nums):
+        # 짝수 번째 값의 합 계산
+        if i % 2 == 0:
+            sum += n
+
+    return sum #sum(sorted(nums)[::2])
 
 #자신을 제외한 곱
 def product_of_array(nums):
@@ -125,12 +177,18 @@ print(product_of_array([1,2,3,4]))
 print(product_of_array([-1,1,0,-3,3]))
 
 #주식을 사고 팔기 좋은 시점
-# def best_time_stock(prices):
-#
-#     return profit
-#
-# print(best_time_stock([7,1,5,3,6,4]))
-# print(best_time_stock([7,6,4,3,1]))
+def best_time_stock(prices):
+    profit = 0
+    min_price = sys.maxsize
+
+    for price in prices:
+        min_price = min(min_price, price)
+        profit = max(profit, price - min_price)
+
+    return profit
+
+print(best_time_stock([7,1,5,3,6,4]))
+print(best_time_stock([7,6,4,3,1]))
 
 class ListNode:
     def __init__(self, val=0, next=None):
@@ -162,15 +220,95 @@ head = ListNode(1, ListNode(2, None))
 print(palidrome_linked_list(head))
 
 def merge_two_sorted_list(l1, l2):
+    if (not l1) or (l2 and l1.val > l2.val):
+        l1, l2 = l2, l1
+    if l1:
+        l1.next = merge_two_sorted_list(l1.next, l2)
+
+    return l1 or l2
 
 
 l1 = ListNode(1, ListNode(2, ListNode(4)))
 l2 = ListNode(1, ListNode(3, ListNode(4)))
 
-
-print(merge_two_list(l1, l2).val)
+print(merge_two_sorted_list(l1, l2).val)
 
 def reverse_linked_list(head):
     rev = ListNode(next=head)
 
     while head:
+        rev, rev.next, head = head, rev, head.next
+    return rev
+
+head = ListNode(1, ListNode(2, ListNode(3,ListNode(4, ListNode(5)))))
+print(reverse_linked_list(head))
+
+def addTwoNumbers(l1, l2):
+    root = rev = ListNode()
+
+    carry, r = 0, 0
+    while l1 and l2:
+        carry, value = divmod(l1.val + l2.val + carry, 10)
+
+        rev.next = ListNode(value)
+        rev = rev.next
+        l1, l2 = l1.next, l2.next
+    if l2:
+        rev.next = l2
+    if l1:
+        rev.next = l1
+    return root.next
+l1 = ListNode(2, ListNode(4, ListNode(3)))
+l2 = ListNode(5, ListNode(6, ListNode(4)))
+print(addTwoNumbers(l1, l2))
+
+def swapNodesInPairs(head): # 12 34
+    root = ListNode(head)
+    prev, curr = root, head
+
+    while prev and curr:
+        tmp = curr.next.next
+        prev.next = curr.next
+        curr.next.next = curr
+        curr.next = tmp
+
+        prev, curr = curr, curr.next
+
+    return root.next
+
+head = ListNode(1, ListNode(2, ListNode(3, ListNode(4))))
+print(swapNodesInPairs(head))
+
+
+def oddEvenLinkedList(head):
+    odd, even = ListNode(), ListNode()
+    root = odd
+
+    even_list = even
+
+    while head:
+        odd.next = head
+        even.next = head.next
+        odd = odd.next
+        if even.next:
+          even = even.next
+        if head.next:
+          head = head.next.next
+        else:
+          head = head.next
+
+    odd.next = even_list.next
+    return root.next
+head = ListNode(1, ListNode(2, ListNode(3,ListNode(4, ListNode(5)))))
+print(oddEvenLinkedList(head).next.next.next.next.val)
+
+def reverseBetween(head, left, right):
+
+    prev, curr = head, head.next
+    for _ in range(left):
+        prev, curr = prev.next, curr.next
+    print(prev.val)
+
+
+head = ListNode(1, ListNode(2, ListNode(3,ListNode(4, ListNode(5)))))
+print(reverseBetween(head, 2, 4))
