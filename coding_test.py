@@ -1422,3 +1422,166 @@ def palindrome_pairs(words):
 print(palindrome_pairs(words = ["abcd","dcba","lls","s","sssll"]))
 print(palindrome_pairs(words = ["bat","tab","cat"]))
 print(palindrome_pairs(words =["a",""]))
+
+#17장 정렬
+
+#버블정렬
+def bubblesort(A):
+    for i in range(1, len(A)):
+        for j in range(0, len(A)-1):
+            if A[j] > A[j+1]:
+                A[j], A[j+1] = A[j+1], A[j]
+#병합정렬
+def merge_sort(lst):
+    if len(lst) == 1:
+        return lst
+    #분할 devide
+    left = merge_sort(lst[len(lst)//2:])
+    right = merge_sort(lst[:len(lst)//2])
+
+    #conquer
+    i = j = 0
+    result = []
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+
+    if i == len(left):
+        result.extend(right[j:])
+    if j == len(right):
+        result.extend(left[i:])
+    return result
+
+#퀵정렬
+def quicksort(A, start, end):
+    if start >= end:
+        return
+    pivot = start
+    left = start + 1
+    right = end
+    while left <= right:
+        while left <= end and A[left] <= A[pivot]:
+            left += 1
+        while right > start and A[right] >= A[pivot]:
+            right += 1
+        if left <= right:
+            A[left], A[right] = A[right] , A[left]
+        else:
+            A[right], A[pivot] = A[pivot], A[right]
+    quicksort(A, start, right - 1)
+    quicksort(A, right, end)
+
+quicksort(array, 0, len(array) -1)
+print(array)
+
+#선택정렬
+def selection_sort():
+    for i in range(len(array)):
+        min_index = i  # 가장 작은 원소의 인덱스
+        for j in range(i + 1, len(array)):
+            if array[min_index] > array[j]:
+                min_index = j
+        array[i], array[min_index] = array[min_index], array[i]  # 스와프
+
+
+#삽입정렬
+def insertion_sort(l, left=0, right=None):
+    if right is None:
+        right = len(l)-1
+    for i in range(left+1, right+1):
+        key = l[i]
+        #j = binary_search(l, key, left+1, right+1)
+        j = i -1
+        while j >= left and l[j] > key:
+            l[j+1] = l[j]
+            j -= 1 #binary 아님
+
+        l[j+1] = key
+    return l
+
+#계수 정렬
+def counting_sort(lst):
+    mina=min(lst)
+    maxa = max(lst)
+
+    counting = [0] * len(lst)
+    for i in range(len(lst)):
+        counting[lst[i]-mina]+=1 #counting
+
+    #printing
+    result = []
+    for i in range(len(counting)):
+        for j in range(counting[i]):
+            result.append(i+mina)
+
+    return result
+
+def radix_sort(lst):
+    D = int(math.log10(max(lst)))
+
+    for i in range(D+1):
+        bucket = []
+
+        for j in range(0, 10):
+            bucket.append([])
+        for j in range(len(lst)):
+            digit = int(lst[j] // math.pow(10,i)) % 10
+            bucket[digit].append(lst[j])
+        #printing
+        cnt = 0
+        for j in range(0, 10):
+            for i in bucket[j]:
+                lst[cnt] = i
+                cnt += 1
+
+    return lst
+
+
+def merge(left, right):
+    a = b = 0
+
+    cArr = []
+
+    while a < len(left) and b < len(right):
+        if left[a] < right[b]:
+            cArr.append(left[a])
+            a += 1
+        elif left[a] > right[b]:
+            cArr.append(right[b])
+            b += 1
+        else:
+            cArr.append(left[a])
+            #cArr.append(right[b])
+            a += 1
+            b += 1
+
+    #if a < len(left):
+    cArr.append(left[a:])
+
+    #if b < len(left):
+    cArr.append(right[b:])
+    return cArr
+
+def tim_sort(l):
+    min_run = 32
+    n = len(l)
+    for i in range(0, n, min_run):
+        insertion_sort(l, i, min((i+min_run-1), (n-1)))
+    #min_run단위로 sort
+
+    size = min_run
+
+    while size<n:
+        for s in range(0, n, size*2):
+            mid = s + size - 1
+            end = min((s + size*2 -1), (n - 1))
+
+            merged = merge(left = l[s:mid+1], right= l[mid+1, end+1])
+            l[s:s+len(merged)] = merged
+        size *= 2
+    return 1
+
