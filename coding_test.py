@@ -448,7 +448,7 @@ class MyCircularQueue:
         if self.q[self.p1] is None:
             return False
         else:
-            self.q[self.p1] = none
+            self.q[self.p1] = None
             self.p1 = (self.p1 + 1) % self.maxlen
             return True
 
@@ -1093,7 +1093,7 @@ class Codec:
                 node.left = TreeNode(int(nodes[index]))
                 queue.append(node.left)
             index += 1
-            if nods[index] is not "#":
+            if node[index] is not "#":
                 node.right = TreeNode(int(nodes[index]))
                 queue.append(node.right)
             index += 1
@@ -1541,34 +1541,6 @@ def counting_sort(lst):
     return result
 
 import math
-import pprint
-
-
-def radix_sort(array):
-    D = int(math.log10(max(array)))
-    print("D", D)
-    for i in range(D + 1):
-        bucket = []
-        for j in range(0, 10):
-            bucket.append([])
-        for j in range(len(array)):
-            digit = int(array[j] // math.pow(10, i)) % 10
-            bucket[digit].append(array[j])
-
-        cnt = 0
-        for j in range(0, 10):
-            for i in bucket[j]:
-                array[cnt] = i
-                cnt += 1
-
-    return array
-
-
-array = [508, 73, 29, 6, 3, 12, 6, 19, 71, 7]
-print(radix_sort(array))
-
-
-import math
 def radix_sort(array):
     D = int(math.log10(max(array)))
     print("D", D)
@@ -1606,15 +1578,15 @@ def merge(left, right):
             b += 1
         else:
             cArr.append(left[a])
-            #cArr.append(right[b])
+            cArr.append(right[b])
             a += 1
             b += 1
 
     #if a < len(left):
-    cArr.append(left[a:])
+    cArr.extend(left[a:])
 
     #if b < len(left):
-    cArr.append(right[b:])
+    cArr.extend(right[b:])
     return cArr
 
 
@@ -1634,7 +1606,7 @@ def insertion_sort(l, left=0, right=None):
     return
 
 def tim_sort(l):
-    min_run = 32
+    min_run = 4
     n = len(l)
     for i in range(0, n, min_run):
         insertion_sort(l, i, min((i+min_run-1), (n-1)))
@@ -1645,10 +1617,11 @@ def tim_sort(l):
     while size<n:
         for s in range(0, n, size*2):
             mid = s + size - 1
-            end = min((s + size*2 -1), (n - 1))
-
-            merged = merge(left = l[s:mid+1], right= l[mid+1, end+1])
+            end = int(min((s + size*2 -1), (n - 1)))
+            merged = merge(left = l[s:mid+1], right= l[mid+1: end+1])
             l[s:s+len(merged)] = merged
         size *= 2
-    return 1
+    return l
 
+array = [5, 7, 9, 6, 3, 1, 6, 9,7, 7,88]
+print(tim_sort(array))
