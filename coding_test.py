@@ -1625,3 +1625,60 @@ def tim_sort(l):
 
 array = [5, 7, 9, 6, 3, 1, 6, 9,7, 7,88]
 print(tim_sort(array))
+
+#리스트 정렬
+def merge_list(l1, l2):
+    if l1 and l2:
+        if l1.val > l2.val:
+          l1, l2 = l2, l1
+        l1.next = merge_list(l1.next, l2)
+    return l1 or l2
+
+def sort_list(head):
+    if not (head and head.next):
+        return head
+
+    half, slow, fast = None, head, head
+
+    while fast and fast.next :
+        half, slow, fast = slow, slow.next, fast.next.next
+    half.next = None
+
+    left = sort_list(head)
+    right =  sort_list(slow)
+
+    return merge_list(left, right)
+
+head = ListNode(4, ListNode(2, ListNode(1, ListNode(3, None))))
+print(sort_list(head).val)
+head = ListNode(-1, ListNode(5, ListNode(3, ListNode(4, ListNode(0)))))
+print(sort_list(head).val)
+
+def insertion_sort_list(head):
+    dummy = ListNode(0, head)
+
+    prev, cur = head, head.next
+
+    while cur:
+        if prev.val <= cur.val:
+            prev, cur = cur, cur.next
+            continue
+
+        temp = dummy
+        while temp.next.val < cur.val:
+            temp = temp.next
+
+        prev.next = cur.next
+        cur.next = temp.next
+        temp.next = cur
+
+        cur = prev.next
+
+    return dummy.next
+
+head = ListNode(4, ListNode(2, ListNode(1, ListNode(3))))
+print(insertion_sort_list(head).val)
+head = ListNode(-1, ListNode(5, ListNode(3, ListNode(4, ListNode(0)))))
+print(insertion_sort_list(head).val)
+
+
