@@ -1654,6 +1654,21 @@ print(sort_list(head).val)
 head = ListNode(-1, ListNode(5, ListNode(3, ListNode(4, ListNode(0)))))
 print(sort_list(head).val)
 
+
+def merge_intervals(intervals):
+    stack = [intervals[0]]
+
+    for i in range(1, len(intervals)):
+        if stack[-1][1] > intervals[i][0]:
+            stack[-1][1] = max(stack[-1][1], intervals[i][1])
+        else:
+            stack.append(intervals[i])
+
+    return stack
+
+
+print(merge_intervals(intervals=[[1, 3], [2, 6], [8, 10], [15, 18]]))
+
 def insertion_sort_list(head):
     dummy = ListNode(0, head)
 
@@ -1682,3 +1697,217 @@ head = ListNode(-1, ListNode(5, ListNode(3, ListNode(4, ListNode(0)))))
 print(insertion_sort_list(head).val)
 
 
+def calculate(a, b):
+	a = str(a)
+	b = str(b)
+	return  int(a+b) < int(b+a)
+
+print(calculate(10, 2))
+def largest_number(nums):
+  i = 1
+  while i < len(nums):
+    j = i
+    while j > 0 and calculate(nums[j-1], nums[j]):
+      nums[j], nums[j-1] = nums[j-1], nums[j]
+      j -= 1
+    i += 1
+
+  return ''.join(list(map(str, [2,10])))
+
+print(largest_number([10,2]))
+print(largest_number( [3,30,34,5,9]))
+
+def valid_anagram(s, t):
+  return sorted(s) == sorted(t)
+
+print(valid_anagram(s = "anagram",t = "nagaram"))
+print(valid_anagram(s = "rat", t = "car"))
+
+def sort_color(nums):
+  red, white, blue = 0, 0, len(nums)-1
+  while white < blue:
+    if nums[white] > 1:
+      nums[blue], nums[white] = nums[white], nums[blue]
+      blue -= 1
+    elif nums[red] < 1:
+      nums[white], nums[red] = nums[red] , nums[white]
+      white += 1
+      red += 1
+    else:
+      white += 1
+  return nums
+print(sort_color([2,0,2,1,1,0]))
+print(sort_color([2,0,1]))
+
+import heapq
+import math
+def Kclosest(points, k):
+  Q = []
+  for x, y in points:
+    heapq.heappush(Q, (math.log(x**2 + y ** 2) , [x, y]))
+
+  result = []
+  for _ in range(k):
+    d, point = heapq.heappop(Q)
+    result.append(point)
+  return result
+print(Kclosest(points = [[1,3],[-2,2]], k = 1))
+print(Kclosest(points = [[3,3],[5,-1],[-2,4]], k = 2))
+
+import bisect
+def binary_search(nums, target):
+
+  for i in nums:
+     r = bisect.bisect_left(nums, i)
+     if nums[r] == target:
+       return r
+  return -1
+
+def binary_search(nums, target):
+  left, right = 0, len(nums) - 1
+
+  while left <= right:
+    mid = (left + right) // 2
+    if nums[mid] == target:
+      return mid
+    if nums[mid] < target:
+      left = mid + 1
+    else:
+      right = mid - 1
+
+  return -1
+
+print(binary_search(nums = [-1,0,3,5,9,12], target = 9))
+print(binary_search(nums = [-1,0,3,5,9,12], target = 2))
+print(binary_search(nums = [-1,0,3,5,9,12], target = 9))
+print(binary_search(nums = [-1,0,3,5,9,12], target = 2))
+
+def search(nums, target) -> int:
+  left, right = 0, len(nums) - 1
+
+  while left <= right:
+    mid = (left + right) // 2
+    if nums[mid] == target:
+      return mid
+
+    if nums[mid] < target:
+      if nums[mid] < nums[left]:
+          left = mid + 1
+      else:
+          right = mid - 1
+    else:
+      if nums[mid] > nums[right]:
+        left = mid + 1
+      else:
+        right = mid - 1
+
+  return -1
+
+
+print(search(nums = [4,5,6,7,0,1,2], target = 0))
+print(search(nums = [4,5,6,7,0,1,2], target = 3))
+print(search(nums = [1], target = 0))
+
+
+def searchMatrix(matrix, target):
+    i = 0
+    j = len(matrix[0]) - 1
+    while i < len(matrix) and j >= 0:
+        if matrix[i][j] == target:
+            return True
+        if matrix[i][j] > target:
+            j -= 1
+        else:
+            i += 1
+    return False
+
+
+print(searchMatrix(
+    matrix=[[1, 4, 7, 11, 15], [2, 5, 8, 12, 19], [3, 6, 9, 16, 22], [10, 13, 14, 17, 24], [18, 21, 23, 26, 30]],
+    target=5))
+print(searchMatrix(
+    matrix=[[1, 4, 7, 11, 15], [2, 5, 8, 12, 19], [3, 6, 9, 16, 22], [10, 13, 14, 17, 24], [18, 21, 23, 26, 30]],
+    target=20))
+
+def singleNumber(nums):
+  i = nums[0]
+  for k in nums[1:]:
+    i ^= k
+  return i
+
+print(singleNumber([2,2,1]))
+print(singleNumber([4,1,2,1,2]))
+
+def hammingDistance(x, y):
+  return bin(x ^ y).count('1')
+print(hammingDistance(1, 4))
+print(hammingDistance(1, 3))
+
+import collections
+
+
+def maxSlidingWindow(nums, k):
+    window = collections.deque()
+    max_win = 0
+    result = []
+    for n in nums:
+        window.append(n)
+        if len(window) < k - 1:
+            continue
+        if len(window) == (k - 1):
+            max_win = max(window)
+            continue
+
+        max_win = max(max_win, n)
+        result.append(max_win)
+
+        if max_win == window.popleft():
+            max_win = max(window)
+
+    return result
+
+
+print(maxSlidingWindow(nums=[1, 3, -1, -3, 5, 3, 6, 7], k=3))
+
+
+def minWindow(s, t):
+    need = collections.Counter(t)
+    missing = len(t)
+
+    left = start = end = 0
+    for right, char in enumerate(s, 1):
+        missing -= need[char] > 0
+        need[char] -= 1
+
+        if missing == 0:
+            while need[s[left]] < 0 and left < right:
+                left += 1
+                need[s[left]] += 1
+
+            if not end or right  - left <= end - start:
+                    start, end = left, right
+            need[s[left]] += 1
+            left += 1
+            missing += 1
+
+    return s[start:end]
+
+
+print(minWindow(s="ADOBECODEBANC", t="ABC"))
+
+
+def longestCharacter(s, k):
+    left = right = 0
+    counts = collections.Counter()
+    for right in range(1, len(s)+1):
+        counts[s[:right-1]] += 1
+        max_char_n = counts.most_common(1)[0][1]
+
+        if right - left - max_char_n > k:
+            counts[s[left]] -= 1
+            left += 1
+    return right - left
+
+
+print(longestCharacter(s="ABAB", k=2))
+print(longestCharacter(s="AABABBA", k=1))
