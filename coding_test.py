@@ -2130,4 +2130,117 @@ print(majority_element(nums = [2,2,1,1,1,2,2]))
 
 #괄호를 사용하는 여러 방법
 def compute(left, right, op):
-    
+
+
+#23장 다이나믹 프로그래밍
+
+def fibonacci(n):
+    if n == 0:
+        return 0
+    if n ==1:
+        return 1
+    return fibonacci(n-1) + fibonacci(n-2)
+
+print(fibonacci(2))
+
+import collections
+def fibonacci_dp(n):
+    dp = collections.defaultdict(int)
+    dp[0] = 0
+    dp[1] = 1
+    for i in range(n-1):
+        dp[i+2] = dp[i] + dp[i+1]
+
+    return dp[n]
+
+print(fibonacci_dp(3))
+print(fibonacci_dp(4))
+
+def maximum_subarray(nums):
+    for i in range(1, len(nums)):
+        nums[i] += nums[i-1] if nums[i-1] > 0 else 0
+    return max(nums)
+
+import sys
+def maximum_subarray_dp(nums):
+    best_sum = -sys.maxsize
+    current_sum = 0
+
+    for num in nums:
+        current_sum = max(num, current_sum+num)
+        best_sum = max(best_sum, current_sum)
+    return best_sum
+
+print(maximum_subarray_dp(nums = [-2,1,-3,4,-1,2,1,-5,4]))
+print(maximum_subarray_dp(nums = [1]))
+print(maximum_subarray_dp(nums = [5,4,-1,7,8]))
+
+def climbing_stairs(n):
+    dp = collections.defaultdict(int)
+    dp[1] = 1
+    dp[2] = 2
+    for i in range(3, n+1):
+        dp[n] = dp[n-1] + dp[n-2]
+    return dp[n]
+
+print(climbing_stairs(2))
+print(climbing_stairs(3))
+
+def house_robber(nums):
+    dp = collections.defaultdict(int)
+    dp[0] = 0
+    dp[1] = nums[0]
+
+    for i in range(2, len(nums)+1):
+        dp[i] = max(dp[i-1], dp[i-2] + nums[i-1])
+    return max(dp.values())
+
+print(house_robber(nums = [1,2,3,1]))
+print(house_robber(nums = [2,7,9,3,1]))
+
+cargo = [
+        (4, 12),
+        (2, 1),
+        (10, 4),
+        (1, 1),
+        (2, 2),
+    ]
+def fractional_knapsack_problem(cargo):
+    capacity = 15
+    pack = []
+
+    for c in cargo:
+        pack.append([c[0]/c[1], c[0], c[1]])
+    pack.sort(reverse = True)
+
+    total_value = 0
+    for p in pack:
+        if capacity - p[2] >= 0:
+            capacity -= p[2]
+            total_value += p[1]
+        else:
+            fraction = capacity/p[2]
+            total_value += p[1] * fraction
+            break
+    return total_value
+
+def zero_one_knapsack(cargo):
+    capacity = 15
+    pack = []
+
+    for i in range(len(cargo)+1):
+        pack.append([])
+        for c in range(capacity + 1):
+            if i == 0 or c == 0:
+                pack[i].append(0)
+            elif cargo[i-1][1] <= c:
+                pack[i].append(
+                    max(
+                        pack[i-1][c],
+                        cargo[i-1][0]+pack[i-1][c - cargo[i-1][1]]
+                    )
+                )
+
+            else:
+                pack[i].append(pack[i-1][c])
+    return pack[-1][-1]
