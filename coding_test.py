@@ -2129,8 +2129,26 @@ print(majority_element(nums = [3,2,3]))
 print(majority_element(nums = [2,2,1,1,1,2,2]))
 
 #괄호를 사용하는 여러 방법
-def compute(left, right, op):
+def different_ways_to_add_parentheses(expression):
+    def compute(left, right, op):
+        result = []
+        for l in left:
+            for r in right:
+                result.append(eval(str(l) + op + str(r)))
+        return result
 
+    if expression.isdigit():
+        return [int(expression)]
+    results = []
+    for index, ex in enumerate(expression):
+        if ex in '+-*':
+            left = different_ways_to_add_parentheses(expression[:index])
+            right = different_ways_to_add_parentheses(expression[index+1:])
+            results.extend(compute(left, right, ex))
+    return results
+
+print(different_ways_to_add_parentheses("2-1-1"))
+print(different_ways_to_add_parentheses("2*3-4*5"))
 
 #23장 다이나믹 프로그래밍
 
