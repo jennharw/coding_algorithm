@@ -1754,6 +1754,7 @@ def Kclosest(points, k):
 print(Kclosest(points = [[1,3],[-2,2]], k = 1))
 print(Kclosest(points = [[3,3],[5,-1],[-2,4]], k = 2))
 
+#18장 이진 검색
 import bisect
 def binary_search(nums, target):
 
@@ -1763,6 +1764,7 @@ def binary_search(nums, target):
        return r
   return -1
 
+#이진 검색
 def binary_search(nums, target):
   left, right = 0, len(nums) - 1
 
@@ -1782,6 +1784,7 @@ print(binary_search(nums = [-1,0,3,5,9,12], target = 2))
 print(binary_search(nums = [-1,0,3,5,9,12], target = 9))
 print(binary_search(nums = [-1,0,3,5,9,12], target = 2))
 
+#회전 정렬된 배열 검색
 def search(nums, target) -> int:
   left, right = 0, len(nums) - 1
 
@@ -1808,7 +1811,51 @@ print(search(nums = [4,5,6,7,0,1,2], target = 0))
 print(search(nums = [4,5,6,7,0,1,2], target = 3))
 print(search(nums = [1], target = 0))
 
+#두 배열의 교집합
+def intersection(nums1, nums2):
+    nums2.sort()
+    result = set()
+    for n in nums1:
+        i = bisect.bisect_left(nums2, n)
+        if nums2[i] == n:
+            result.add(n)
+    return result
 
+print(intersection(nums1 = [1,2,2,1], nums2 = [2,2]))
+print(intersection(nums1 = [4,9,5], nums2 = [9,4,9,8,4]))
+
+def intersection(nums1, nums2):
+  nums2.sort()
+  nums1.sort()
+  result = set()
+  i = j = 0
+  while i < len(nums1) and j < len(nums2):
+    if nums1[i] > nums2[j]:
+      j += 1
+    elif nums1[i] < nums2[2]:
+      i += 1
+    else:
+      result.add(nums1[i])
+      i += 1
+      j += 1
+
+  return result
+
+print(intersection(nums1 = [1,2,2,1], nums2 = [2,2]))
+print(intersection(nums1 = [4,9,5], nums2 = [9,4,9,8,4]))
+
+#두 수의 합
+def two_sum(numbers, target):
+    for i in range(len(numbers)):
+        k = bisect.bisect_left(numbers, target - numbers[i])
+        if numbers[k] + numbers[i] == target:
+            return [i + 1, k + 1]
+
+
+print(two_sum(numbers=[2, 7, 11, 15], target=9))
+print(two_sum(numbers = [2,3,4], target = 6))
+
+#2D 행렬 검색
 def searchMatrix(matrix, target):
     i = 0
     j = len(matrix[0]) - 1
@@ -1821,7 +1868,6 @@ def searchMatrix(matrix, target):
             i += 1
     return False
 
-
 print(searchMatrix(
     matrix=[[1, 4, 7, 11, 15], [2, 5, 8, 12, 19], [3, 6, 9, 16, 22], [10, 13, 14, 17, 24], [18, 21, 23, 26, 30]],
     target=5))
@@ -1829,6 +1875,9 @@ print(searchMatrix(
     matrix=[[1, 4, 7, 11, 15], [2, 5, 8, 12, 19], [3, 6, 9, 16, 22], [10, 13, 14, 17, 24], [18, 21, 23, 26, 30]],
     target=20))
 
+#19장 비트 조작
+
+#싱글 넘버
 def singleNumber(nums):
   i = nums[0]
   for k in nums[1:]:
@@ -1838,54 +1887,111 @@ def singleNumber(nums):
 print(singleNumber([2,2,1]))
 print(singleNumber([4,1,2,1,2]))
 
+#해밍 거리
 def hammingDistance(x, y):
   return bin(x ^ y).count('1')
 print(hammingDistance(1, 4))
 print(hammingDistance(1, 3))
 
-import collections
+#두 정수의 합
+def two_sum_bits(a, b):
+
+    while b != 0:
+        c = a ^ b
+        b = (a & b) << 1
+        a = c
+
+    return a
+
+print(two_sum_bits(1,2))
+print(two_sum_bits(2,3))
+print(two_sum_bits(9,11))
+
+#UTF-8 Validation
+def validate_utf8(data):
+  i = 0
+  while i < len(data):
+    digit_num= 0
+    n = data[i]
+    if  n > 255:
+
+      return False
+    elif  n & (128+64+32) == (128+64):
+      digit_num  +=1
+    elif  n & (128+64+32+16) == (128+64+32):
+      digit_num  +=2
+    elif  n & (128+64+32+16+8) == (128+64+32+16):
+      digit_num  +=3
+    elif n & 128 == 0 :
+      digit_num = 0
+    else:
+
+      return False
+
+    for _ in range(digit_num):
+      i +=1
+      if (data[i] & (128+64) != 128):
+        return False
+    i += 1
+  return True
+
+print(validate_utf8(data = [197,130,1]))
+print(validate_utf8(data = [235,140,4]))
+
+#1비트의 개수
+def number_of_1bits(n):
+    return bin(n).count('1')
+
+print(number_of_1bits(n = "00000000000000000000000000001011"))
+print(number_of_1bits(n = "00000000000000000000000010000000"))
+print(number_of_1bits(n = "11111111111111111111111111111101"))
 
 
+#20장 슬라이딩 윈도우
+#최대 슬라이딩 윈도우
 def maxSlidingWindow(nums, k):
     window = collections.deque()
-    max_win = 0
+    max_win = float('-inf')
     result = []
     for n in nums:
         window.append(n)
         if len(window) < k - 1:
             continue
-        if len(window) == (k - 1):
+        if max_win == float('-inf'):
             max_win = max(window)
-            continue
+        elif n > max_win:
+            max_win = n
 
-        max_win = max(max_win, n)
         result.append(max_win)
 
         if max_win == window.popleft():
-            max_win = max(window)
+            max_win = float('-inf')
 
     return result
 
-
 print(maxSlidingWindow(nums=[1, 3, -1, -3, 5, 3, 6, 7], k=3))
+print(maxSlidingWindow(nums = [1], k = 1))
 
 
+#부분 문자열이 포함된 최소 윈도우
 def minWindow(s, t):
     need = collections.Counter(t)
     missing = len(t)
 
     left = start = end = 0
+
     for right, char in enumerate(s, 1):
+
         missing -= need[char] > 0
         need[char] -= 1
 
         if missing == 0:
-            while need[s[left]] < 0 and left < right:
-                left += 1
+            while (need[s[left]] < 0 and left < right):
                 need[s[left]] += 1
+                left += 1
 
-            if not end or right  - left <= end - start:
-                    start, end = left, right
+            if end == 0 or right - left < end - start:
+                start, end = left, right
             need[s[left]] += 1
             left += 1
             missing += 1
@@ -1894,20 +2000,134 @@ def minWindow(s, t):
 
 
 print(minWindow(s="ADOBECODEBANC", t="ABC"))
-
+print(minWindow(s="a", t="a"))
+print(minWindow(s="a", t="aa"))
 
 def longestCharacter(s, k):
     left = right = 0
     counts = collections.Counter()
-    for right in range(1, len(s)+1):
-        counts[s[:right-1]] += 1
-        max_char_n = counts.most_common(1)[0][1]
+    for right in range(1, len(s) + 1):
+        counts[s[right - 1]] += 1
+        n = counts.most_common(1)[0][1]
 
-        if right - left - max_char_n > k:
+        if right - left - n > k:
             counts[s[left]] -= 1
             left += 1
+
     return right - left
 
 
 print(longestCharacter(s="ABAB", k=2))
 print(longestCharacter(s="AABABBA", k=1))
+
+#21장 그리디 알고리즘
+#주식을 사고 팔기 좋은 시점
+def profit(prices):
+  result = 0
+
+  for i in range(len(prices)-1):
+    if prices[i+1] > prices[i]:
+      result += prices[i+1] - prices[i]
+
+  return result
+
+print(profit(prices = [7,1,5,3,6,4]))
+print(profit(prices = [1,2,3,4,5]))
+print(profit(prices = [7,6,4,3,1]))
+
+#키에따른 대기열 재구성
+import heapq
+def height(people):
+  heap = []
+
+  for p, i in people:
+    heapq.heappush(heap, (-p, i))
+
+  result = []
+
+  while heap:
+    p, i = heapq.heappop(heap)
+    result.insert(i, [-p, i])
+  return result
+
+print(height([[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]))
+print(height(people = [[6,0],[5,0],[4,0],[3,2],[2,2],[1,4]]))
+
+#태스크 스케줄러
+def leastIntervals(tasks, n):
+  counter = collections.Counter(tasks)
+  result = 0
+
+  while True:
+    sub_count = 0
+    for task, _ in counter.most_common(n+1):
+     sub_count += 1
+     result += 1
+     counter.subtract(task)
+
+     counter +=  collections.Counter()
+
+
+    if not counter:
+       break
+
+    result += n - sub_count + 1
+  return result
+
+print(leastIntervals(tasks = ["A","A","A","B","B","B"], n = 2))
+print(leastIntervals(tasks = ["A","A","A","B","B","B"], n = 0))
+print(leastIntervals(tasks = ["A","A","A","A","A","A","B","C","D","E","F","G"], n = 2))
+
+
+#주요소
+def gas(gas, cost):
+    if sum(gas) < sum(cost):
+        return -1
+    result = 0
+    answer = -1
+    for i in range(len(gas)):
+
+        result += gas[i] - cost[i]
+        if result < 0:
+            result = 0
+            answer = i + 1
+
+    return answer
+
+
+print(gas(gas=[1, 2, 3, 4, 5], cost=[3, 4, 5, 1, 2]))
+print(gas(gas=[2, 3, 4], cost=[3, 4, 3]))
+
+#쿠키
+def assign_cookies(g, s):
+    g.sort()  # 아가
+    s.sort()
+    i = 0
+    j = 0
+
+    while i < len(g) and j < len(s):
+        if g[i] <= s[j]:
+            i += 1
+            j += 1
+        else:
+            j += 1
+
+    return i
+
+
+print(assign_cookies(g=[1, 2, 3], s=[1, 1]))
+print(assign_cookies(g=[1, 2], s=[1, 2, 3]))
+
+#22장 분할 정복
+
+#과반수 element
+def majority_element(nums):
+    nums.sort()
+    return nums[len(nums) // 2]
+
+print(majority_element(nums = [3,2,3]))
+print(majority_element(nums = [2,2,1,1,1,2,2]))
+
+#괄호를 사용하는 여러 방법
+def compute(left, right, op):
+    
