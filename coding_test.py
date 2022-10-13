@@ -1,3 +1,5 @@
+import datetime
+
 print("git test")
 #코딩테스트 알고리즘 by 최하림
 
@@ -2264,3 +2266,198 @@ def zero_one_knapsack(cargo):
     return pack[-1][-1]
 
 #카카오
+
+#비밀지도
+def solution1(n, arr1, arr2):
+    result = []
+    for i in range(n):
+        result.append(bin(arr1[i] | arr2[i])[2:].zfill(n).replace('1', '#').replace('0',' '))
+    return result
+
+
+print(solution1(n =	5, arr1	= [9, 20, 28, 18, 11], arr2	= [30, 1, 21, 17, 28]))
+print(solution1(n =6, arr1	 = [46, 33, 33 ,22, 31, 50], arr2	= [27 ,56, 19, 14, 14, 10]))
+
+#다트게임
+def solution2(dartResult):
+    result = []
+    s = ''
+    for i in dartResult:
+        if i == 'S':
+            result.append(int(s) ** 1)
+            s = ''
+        elif i == 'D':
+            result.append(int(s) ** 2)
+            s = ''
+        elif i == 'T':
+            result.append(int(s) ** 3)
+            s = ''
+        elif i == '*':
+            result[-1] = result[-1] * 2
+            if len(result) > 1: result[-2] = result[-2] * 2
+        elif i == '#':
+            result[-1] = -result[-1]
+        else:
+            s += i
+    return sum(result)
+
+print(solution2("1S2D*3T"))
+print(solution2("1D2S#10S"))
+print(solution2("1D2S0T"))
+print(solution2("1S*2T*3S"))
+print(solution2("1D#2S*3S"))
+print(solution2("1T2D3D#"))
+print(solution2("1D2S3T*"))
+
+import collections
+
+#캐시
+def solution3(cacheSize, cities):
+    window = collections.deque(maxlen=cacheSize)
+    result = 0
+    for city in cities:
+        city = city.lower()
+        if city in window:
+            #재삽입
+            result += 1
+            window.remove(city)
+            window.append(city)
+        else:
+            result += 5
+            window.append(city)
+
+    return result
+
+
+print(solution3(3, ["Jeju", "Pangyo", "Seoul", "NewYork", "LA", "Jeju", "Pangyo", "Seoul", "NewYork", "LA"]))
+print(solution3(3, ["Jeju", "Pangyo", "Seoul", "Jeju", "Pangyo", "Seoul", "Jeju", "Pangyo", "Seoul"]))
+print(solution3(2, ["Jeju", "Pangyo", "Seoul", "NewYork", "LA", "SanFrancisco", "Seoul", "Rome", "Paris", "Jeju",
+                    "NewYork", "Rome"]))
+print(solution3(5, ["Jeju", "Pangyo", "Seoul", "NewYork", "LA", "SanFrancisco", "Seoul", "Rome", "Paris", "Jeju",
+                    "NewYork", "Rome"]))
+print(solution3(2, ["Jeju", "Pangyo", "NewYork", "newyork"]))
+print(solution3(0, ["Jeju", "Pangyo", "Seoul", "NewYork", "LA"]))
+
+#셔틀버스
+def solution4(n, t, m, timetable):
+    timetable = [int(time[:2]) * 60 + int(time[3:])  for time in timetable]
+    timetable.sort()
+    current = 60* 9
+    for _ in range(n):
+        for _ in range(m):
+            if timetable and timetable[0] <= current:
+                candidate = timetable.pop(0) - 1
+            else:
+                candidate = current
+
+        current += t
+    h, m = divmod(candidate, 60)
+    return str(h).zfill(2) + ":" + str(m).zfill(2)
+
+print(solution4(1,1, 5, ["08:00", "08:01", "08:02", "08:03"]))
+print(solution4(2, 10, 2, ["09:10", "09:09", "08:00"]))
+print(solution4(2, 1, 2, 	["09:00", "09:00", "09:00", "09:00"]))
+print(solution4(1, 1, 5, ["00:01", "00:01", "00:01", "00:01", "00:01"]))
+print(solution4(1, 1, 1, 	["23:59"]))
+print(solution4(10, 60, 45, 	["23:59","23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59"]))
+
+import collections
+import re
+
+
+#뉴스클러스터링
+def solution5(str1, str2):
+    str1 = [str1[i:i + 2].lower() for i in range(len(str1) - 1) if re.findall('[a-z]{2}', str1[i:i + 2].lower())]
+    str2 = [str2[i:i + 2].lower() for i in range(len(str2) - 1) if re.findall('[a-z]{2}', str2[i:i + 2].lower())]
+    str1 = collections.Counter(str1)
+    str2 = collections.Counter(str2)
+    intersection = sum((str1 & str2).values())
+    union = sum((str1 | str2).values())
+
+    jarcard_sim = 1 if union == 0 else intersection / union
+    return int(jarcard_sim * 65536)
+
+
+print(solution5('FRANCE', 'french'))
+print(solution5('handshake', 'shake hands'))
+print(solution5('aa1+aa2', 'AAAA12'))
+print(solution5('E=M*C^2	', 'e=m*c^2	'))
+
+#프렌즈4 블록
+def solution6(m, n, board):
+    board = [list(x) for x in board]
+
+    matched = True
+    while matched:
+        matched = []
+        # 삭제될 것이 있는지 확인
+        for i in range(m - 1):
+            for j in range(n - 1):
+                if board[i][j] == board[i + 1][j] == board[i][j + 1] == board[i + 1][j + 1] != '#':
+                    matched.append((i, j))
+
+        # 삭제
+        for i, j in matched:
+            board[i][j] = board[i + 1][j] = board[i][j + 1] = board[i + 1][j + 1] = '#'
+
+        # 다시 내려오기
+        for _ in range(m):
+            for i in range(m):
+                for j in range(n):
+                    if i > 0 and board[i][j] == '#':
+                        board[i][j], board[i - 1][j] = board[i - 1][j], '#'
+
+    return sum(x.count('#') for x in board)
+
+
+print(solution6(4, 5, ["CCBDE", "AAADE", "AAABF", "CCBBF"]))
+print(solution6(6, 6, ["TTTANT", "RRFACC", "RRRFCC", "TRRRAA", "TTMMMF", "TMMTTJ"]))
+
+#추석 트래픽import datetime
+def solution7(lines):
+    #시작, 끝
+    packed = []
+    for line in lines:
+        logs = line.split(' ')
+        timestamp = datetime.datetime.strptime(logs[0] + ' ' + logs[1], "%Y-%m-%d %H:%M:%S.%f").timestamp()
+
+        timestamp = datetime.datetime.strptime(logs[0] + ' ' + logs[1], "%Y-%m-%d %H:%M:%S.%f").timestamp()
+        packed.append((timestamp, -1))
+        packed.append((timestamp - float(logs[2][:-1]) + 0.001, 1))
+
+    accumulated = 0
+    max_requests = 1
+    packed.sort(key=lambda x: x[0])
+    for i, elem1 in enumerate(packed):
+        current = accumulated #종료되지 않은 누적된 request
+
+        for elem2 in packed[i:]:
+            if elem2[0] - elem1[0] > 0.999:
+                break
+            if elem2[1] > 0:
+                current += elem2[1] #1초 내 시작되는 request
+        max_requests = max(max_requests, current)
+        accumulated += elem1[1]
+
+    return max_requests
+
+print(solution7([
+"2016-09-15 01:00:04.001 2.0s",
+"2016-09-15 01:00:07.000 2s"
+]))
+print(solution7([
+"2016-09-15 01:00:04.002 2.0s",
+"2016-09-15 01:00:07.000 2s"
+]))
+print(solution7([
+"2016-09-15 20:59:57.421 0.351s",
+"2016-09-15 20:59:58.233 1.181s",
+"2016-09-15 20:59:58.299 0.8s",
+"2016-09-15 20:59:58.688 1.041s",
+"2016-09-15 20:59:59.591 1.412s",
+"2016-09-15 21:00:00.464 1.466s",
+"2016-09-15 21:00:00.741 1.581s",
+"2016-09-15 21:00:00.748 2.31s",
+"2016-09-15 21:00:00.966 0.381s",
+"2016-09-15 21:00:02.066 2.62s"
+]))
