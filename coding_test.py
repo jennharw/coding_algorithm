@@ -2680,12 +2680,6 @@ print(implement_bfs(graph = [
   [1, 7]
 ]))
 
-#음료수 얼려먹기
-
-
-
-
-
 # 음료수 얼려먹기
 def freezing_drink(grid):  # 총 0그룹이 몇 개인지
     visited = [[False] * len(grid[0]) for _ in range(len(grid))]
@@ -2710,12 +2704,25 @@ def freezing_drink(grid):  # 총 0그룹이 몇 개인지
     return count
 
 
-print(freezing_drink([[0, 0, 1, 1, 0], [0, 0, 0, 1, 1], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0]]))
-
+# print(freezing_drink([[0, 0, 1, 1, 0], [0, 0, 0, 1, 1], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0]]))
+# print(freezing_drink([[0, 0, 1], [0, 1, 0], [1, 0, 1]]))
+print(freezing_drink([[0,0,0,0,0,1,1,1,1,0,0,0,0,0],
+                      [1,1,1,1,1,1,0,1,1,1,1,1,1,0],
+                      [1,1,0,1,1,1,0,1,1,0,1,1,1,0],
+                      [1,1,0,1,1,1,0,1,1,0,0,0,0,0],
+                      [1,1,0,1,1,1,1,1,1,1,1,1,1,1],
+                      [1,1,0,1,1,1,1,1,1,1,1,1,0,0],
+                      [1,1,0,0,0,0,0,0,0,1,1,1,1,1],
+                      [0,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                      [0,0,0,0,0,0,0,0,0,1,1,1,1,1],
+                      [0,1,1,1,1,1,1,1,1,1,1,0,0,0],
+                      [0,0,0,1,1,1,1,1,1,1,1,0,0,0],
+                      [0,0,0,0,0,0,0,1,1,1,1,0,0,0],
+                      [1,1,1,1,1,1,1,1,1,1,0,0,1,1],
+                      [1,1,1,0,0,0,1,1,1,1,1,1,1,1],
+                      [1,1,1,0,0,0,1,1,1,1,1,1,1,1]]))
 #미로 탈출
 import collections
-
-
 def maze(n, m, grid):
     # 최소 dp 괴물 0
 
@@ -2746,31 +2753,33 @@ print(maze(3, 3, [[1, 1, 0], [0, 1, 0], [0, 1, 1]]))
 print(maze(5, 6, [[1, 0, 1, 0, 1, 0], [1, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 1], [1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1]]))
 
 #정렬
-#위에서 아래로
-def uptodown(array):
+# 위에서 아래로
+def up_to_down(array):
     return sorted(array, reverse=True)
 
-print(uptodown([15, 27, 12]))
+print(up_to_down([15, 27, 12]))
 
-#성적이 낮은 학생
+# 성적이 낮은 학생
 def grade(array):
-    array.sort(key = lambda x:x[1])
+    array.sort(key=lambda x: x[1])
     array = [i[0] for i in array]
     return array
 
 print(grade([("홍길동", 95), ("이순신", 77)]))
 
-#두 배열의 원소 교체
+# 두 배열의 원소 교체
 def exchange(n, k, array1, array2):
     array1.sort()
-    array2.sort(reversed =True)
+    array2.sort(reverse=True)
     for i in range(k):
         if array1[i] < array2[i]:
-            array1[i], array2[i] = array1[i], array2[i]
-
+            array1[i], array2[i] = array2[i], array1[i]
         else:
             break
     return sum(array1)
+
+print(exchange(5, 3, [1, 2, 5, 4, 3], [5, 5, 6, 6, 5]))
+
 
 #이진 탐색
 #빠르게 입력 받기
@@ -2779,28 +2788,36 @@ def exchange(n, k, array1, array2):
 
 #부품찾기
 import bisect
-def binary_search(array, target, start, end):
-    while start <= end:
-        mid = (start + end) // 2
-        if array[mid] == target:
-            return mid
-        elif array[mid] > target:
-            end = mid - 1
-        else:
-            start = mid + 1
+
+def binary_search(k, array, start, end):
+    while start <= end :
+      mid = (start + end) // 2
+      if array[mid] == k:
+        return mid
+      elif array[mid] < k:
+        start = mid + 1
+      else:
+        end = mid - 1
     return None
-def find(n, n_list, m, m_list):
+
+def find_element(n, n_list, m, m_list):
     n_list.sort()
     m_list.sort()
 
-    for k in m_list:
-        i = bisect.bisect_left(k, array, 0, n-1)
-        if i != None:
-            print("Yes", end = ' ')
-        else:
-            print('No', end = ' ')
+    # for k in m_list:
+    #     i = bisect.bisect_left(n_list,k)
+    #     if n_list[i] == k:
+    #         print("Yes", end = ' ')
+    #     else:
+    #         print('No', end = ' ')
 
-    return
+    # for k in m_list:
+    #   i = binary_search(k, n_list, 0, n-1)
+    #   if i != None:
+    #         print("Yes", end = ' ')
+    #   else:
+    #         print("No", end = ' ')
+
     array = set(n_list)
     for k in m_list:
         if k in array:
@@ -2808,32 +2825,31 @@ def find(n, n_list, m, m_list):
         else:
             print('No', end=' ')
 
-print(find(5, [8,3,7,9,2], 3, [5,7,9]))
+print(find_element(5, [8,3,7,9,2], 3, [5,7,9]))
+
 #떡볶이 떡
 def tteokbokki(n, m, t):
     t.sort()
-    start, end = 0, len(t) - 1
+    start, end = 0, t[-1]
+    answer = 0
     while start<=end:
-        mid = (start + end) - 1
+        mid = (start + end) // 2
         result = 0
         for i in t:
-            result += i - mid > 0
-        if result == m:
-            return mid
-        elif result > m:
-            start = mid + 1
-        else:
+          if i - mid > 0:
+            result += i - mid
+        if result < m: #떡이 부족한 경우
             end = mid - 1
-    return mid
+        else:
+            answer = mid #최대한 덜 잘랐을 때
+            start = mid + 1
+
+    return answer
 
 print(tteokbokki(4, 6, [19,15,10,17]))
 
 #다이나믹 프로그래밍
 #1로 만들기
-#개미전사
-#바닥공사
-#효율적인 화폐구성
-
 def make1(N):
     dp = [0] * (N+1)
 
@@ -2848,17 +2864,21 @@ def make1(N):
         if i % 5 == 0:
             dp[i] = min(dp[i], dp[i // 5] + 1)
 
-    return dp[N+1]
+    return dp[N]
+
+print(make1(26))
+
 #개미전사
 def ant(array):
-    dp = [0] * len(array+1)
-
-    for i in range(len(array)+1):
-        if i == 1:
-            dp[i] = array[i-1]
+    dp = [0] * (len(array))
+    for i in range(len(array)):
+        if i == 0 or i == 1:
+            dp[i] = array[i]
             continue
-        dp[i] = max(dp[i-1], dp[i-2] + array[i-1])
-    return dp[len(array)]
+        dp[i] = max(dp[i-1], dp[i-2] + array[i])
+    return dp[len(array)-1]
+
+print(ant([1,3,1,5]))
 
 #바닥공사
 def floor(N):
@@ -2866,91 +2886,156 @@ def floor(N):
     dp = [0] * (N+1)
     dp[1] = 1
     dp[2] = 3
-    for i in range(3,N):
-        dp[i] = dp[i-2] + 2*dp[i-1]
+
+    for i in range(3,N+1):
+        dp[i] = dp[i-1] + 2 * dp[i-2]
     return dp[N]
 
-print(floor(3))# 5
+print(floor(3)) # 5
+
+#효율적인 화폐구성
+def currency(n, m, coins):
+    dp = [10001] * (10000)
+    for c in coins:
+        dp[c] = 1
+
+    for i in range(1, m + 1):
+        for c in coins:
+            if i - c > 0:
+                dp[i] = min(dp[i - c] + 1, dp[i])
+    if dp[m] == 100001:
+        return -1
+    return dp[m]
+
+
+print(currency(2, 15, [2, 3]))
+print(currency(3, 4, [3, 5, 7]))
+
+
+#9장 최단 경로
+
+import heapq
 
 #다익스트라
-import heapq
-def dijkstra(n, k, start, graph):
-    grid = collections.defaultdict()
-    for x, y, z in graph:
-        grid[x].append((y, z))
+def dijkstra(n, k, start, grid):
+    graph = collections.defaultdict(list)
+    for x, y, z in grid:
+        graph[x].append((y, z))
 
     heap = [(0, start)]
-    distance = [0] * n
+    distance = [int(1e9)] * (n + 1)
     while heap:
         dist, v = heapq.heappop(heap)
+
+        if distance[v] < dist:
+            continue
+        distance[v] = dist
+
         for y, z in graph[v]:
-            distance[y] += z + dist
-            heapq.heappush(heap, (z+dist, y))
+            if z+dist < distance[y]:
+                heapq.heappush(heap, (z + dist, y))
 
-    return distance
+    for i in range(1, n + 1):
+        print(distance[i], end=' ')
+
+print(dijkstra(6, 11, 1,
+               [[1, 2, 2], [1, 3, 5], [1, 4, 1], [2, 3, 3], [2, 4, 2], [3, 2, 3], [3, 6, 5], [4, 3, 3], [4, 5, 1],
+                [5, 3, 1], [5, 6, 2]]))
 
 
-print(dijkstra(6, 11, 1, [[1,2,2], [1,3,5], [1,4,1],[2,3,3],[2,4,2],[3,2,3],[3,6,5],[4,3,3],[4,5,1],[5,3,1],[5,6,2]]))
 #모든 노드로 가기 위한 최단 거리
-def floydwarshalle(n, k, graph):
+def floyd_warshall(n, k, graph):
     grid = collections.defaultdict(list)
+    INF = int(1e9)
+    dist = [[INF] * (n+1) for _ in range(n+1)]
     for x, y, z in graph:
-        grid[x].append((y, z))
-    dist = [[10001] * (n+1) for _ in range(n+1)]
-
-    for k in range(n):
-        for i in range(n):
-            for j in range(n):
-                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
-    return dist
-
-
-print(floydwarshalle(4, 7, [[1,2,4],[1,4,6],[2,1,3],[2,3,7],[3,1,5],[3,4,4],[4,3,2]]))
-
-#미래도시
-def future(n,m, graph, x, k):#a가 1번에서  k 번회사를 거쳐 x 번 회사로 가는 최소 이동 시간
-    #floyed warsharl
-    grid = [[10001]  * (n+1) for _ in range(n+1)]
-
-    grap = collections.defaultdict(list)
-    for x, y in graph:
-        grap[x].append(y)
+        dist[x][y] = z
+    for p in range(n+1):
+        dist[p][p] = 0
 
     for k in range(n+1):
         for i in range(n+1):
             for j in range(n+1):
-                grap[i][j] = min(grap[i][j], grap[i][k] + grap[k][j])
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
 
-    return graph[1][k] + graph[k][x]
+    for a in range(1, n+1):
+      for b in range(1, n+1):
+        if dist[a][b] == INF:
+          print('INFINITY', end=' ')
+        else:
+          print(dist[a][b], end=' ')
+      print()
+
+print(floyd_warshall(4, 7, [[1,2,4],[1,4,6],[2,1,3],[2,3,7],[3,1,5],[3,4,4],[4,3,2]]))
+
+#미래도시
+def future_city(n,m, grid, x, k):#a가 1번에서  k 번회사를 거쳐 x 번 회사로 가는 최소 이동 시간
+    #floyd warshall
+    INF = int(1e9)
+    dist = [[INF]  * (n+1) for _ in range(n+1)]
+
+    for x, y in grid:
+        dist[x][y] = 1
+        dist[y][x] = 1
+
+    for i in range(1, n+1):
+        dist[i][i] = 0
+
+    for k in range(n+1):
+        for i in range(n+1):
+            for j in range(n+1):
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+
+    if dist[1][k] + dist[k][x] >= INF:
+      return -1
+    else:
+      return dist[1][k] + dist[k][x]
 
 
-print(future(5,7,[[1,2],[1,3],[1,4],[2,4],[3,4],[3,5],[4,5]],4,5))
-print(future(4,2,[[1,3],[2,4]],3,4))
+print(future_city(5,7,[[1,2],[1,3],[1,4],[2,4],[3,4],[3,5],[4,5]],4,5))
+print(future_city(4,2,[[1,3],[2,4]],3,4))
 
 
-def telegram(n, m, c, graph):
-    #c에서 보낸 베시지를 받는 도시의 총 개수와 총 걸리는 시간
-    grap = collections.defaultdict(list)
-    for x, y, z in graph:
-        grap[x].append((y, z))
-    distance = [-1] * (n+1)
+# 전보
+
+def telegram(n, m, c, grid):
+    # c에서 보낸 베시지를 받는 도시의 총 개수와 총 걸리는 시간
+    INF = int(1e9)
+    graph = collections.defaultdict(list)
+    for x, y, z in grid:
+        graph[x].append((y, z))
+    distance = [INF] * (n + 1)
+
     distance[c] = 0
     heap = [(0, c)]
+
     while heap:
-        dist, v = heapq.heappop(grap)
-        for w, d in grap[v]:
-            distance[w] = dist + d
-            heapq.heappush(heap, ((dist+d, w)))
+        dist, v = heapq.heappop(heap)
+        if distance[v] < dist:
+            continue
+        for w, d in graph[v]:
+            if dist+d < distance[w]:
+                distance[w] = dist + d
+                heapq.heappush(heap, ((dist + d, w)))
+
+    # 도달할 수 있는 노드의 개수
+    count = 0
+    # 도달할 수 있는 노드 중에서, 가장 멀리 있는 노드와의 최단 거리
+    max_distance = 0
+    for d in distance:
+        # 도달할 수 있는 노드인 경우
+        if d != 1e9:
+            count += 1
+            max_distance = max(max_distance, d)
+
+    # 시작 노드는 제외해야 하므로 count - 1을 출력
+    print(count - 1, max_distance)
 
 
+print(telegram(3, 2, 1, [[1, 2, 4], [1, 3, 2]]))
 
-print(telegram(3,2,1,[[1,2,4],[1,3,2]]))
-
-
-
-#크루스칼 알고리즘
+#10장 그래프 이론
 #서로소 집합 알고리즘
-#위상 정렬
 def find_parent(parent, x):
 	if parent[x] != x:
 		parent[x] = find_parent(parent, parent[x])
@@ -2958,31 +3043,30 @@ def find_parent(parent, x):
 
 def union_parent(parent, a, b):
 	a = find_parent(parent, a)
-	b = find_parent(parnet, b)
+	b = find_parent(parent, b)
 	if a < b:
-		parnet[b] = a
-
+		parent[b] = a
 	else:
-p		parent[b] = a
+	  parent[a] = b
 
-# 부모 테이블상에서, 부모를 자기 자신으로 초기화
-for i in range(1, v + 1):
-    parent[i] = i
+def coprime(v, e, graph): #노드의 개수, 간선의 개수, 그래프
+    parent = [0] * (v+1)
+    # 부모 테이블상에서, 부모를 자기 자신으로 초기화
+    for i in range(1, v + 1):
+        parent[i] = i
 
-# 간선을 비용순으로 정렬
-edges.sort()
+    for a, b in graph:
+        union_parent(parent, a, b)
+    # 각 원소가 속한 집합 출력하기
+    print('각 원소가 속한 집합: ', end='')
+    for i in range(1, v + 1):
+        print(find_parent(parent, i), end=' ')
 
-for edge in edges:
-	cost, a, b = edge
-	if find_parent(parent, a) != find_parent(parnet, b):
-		union_parnet(parnet, a, b)
-		result += cost
-# 각 원소가 속한 집합 출력하기
-print('각 원소가 속한 집합: ', end='')
-for i in range(1, v + 1):
-    print(find_parent(parent, i), end=' ')
+print(coprime(6,4,[[1,4],[2,3],[2,4],[5,6]]))
 
-print()
+#크루스칼 알고리즘
+
+#위상 정렬
 
 #위상정렬
 진입차수확인
