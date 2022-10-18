@@ -1,3 +1,4 @@
+import copy
 import datetime
 
 print("git test")
@@ -2722,3 +2723,130 @@ def telegram(n, m, c, graph):
 
 
 print(telegram(3,2,1,[[1,2,4],[1,3,2]]))
+
+
+
+#크루스칼 알고리즘
+#서로소 집합 알고리즘
+#위상 정렬
+def find_parent(parent, x):
+	if parent[x] != x:
+		parent[x] = find_parent(parent, parent[x])
+	return parent[x]
+
+def union_parent(parent, a, b):
+	a = find_parent(parent, a)
+	b = find_parent(parnet, b)
+	if a < b:
+		parnet[b] = a
+
+	else:
+p		parent[b] = a
+
+# 부모 테이블상에서, 부모를 자기 자신으로 초기화
+for i in range(1, v + 1):
+    parent[i] = i
+
+# 간선을 비용순으로 정렬
+edges.sort()
+
+for edge in edges:
+	cost, a, b = edge
+	if find_parent(parent, a) != find_parent(parnet, b):
+		union_parnet(parnet, a, b)
+		result += cost
+# 각 원소가 속한 집합 출력하기
+print('각 원소가 속한 집합: ', end='')
+for i in range(1, v + 1):
+    print(find_parent(parent, i), end=' ')
+
+print()
+
+#위상정렬
+진입차수확인
+# 모든 노드에 대한 진입차수는 0으로 초기화
+indegree = [0] * (v + 1)
+
+for a, b in graph:
+	graph[a].append(b)
+	indegree[a] += 1
+
+def topology_sort():
+	result = []
+	q = deque()
+	for i in range(1, v+1):
+		now = q.popleft()
+		result.append(now)
+		for i in graph[now]:
+			indegree[i] -= 1
+			if indegree[i] == 0:
+				q.append(i)
+	for i in result:
+        print(i, end=' ')
+
+topology_sort()
+
+#팀결성
+def teammaking(n, m, operations):
+    parent = [0] * (n+1)
+    for oper, a, b in operations:
+        if oper == 0:
+            union_parent(parent, a, b)
+        else:
+            if find_parent(parent=parent, a) == find_parent(parent, b):
+                print("y")
+            else:
+                print("n")
+
+#도시분할
+def divide_city(v, e, edges):
+    parent = [0] * (v + 1)  # 부모 테이블 초기화
+
+    # 부모 테이블상에서, 부모를 자기 자신으로 초기화
+    for i in range(1, v + 1):
+        parent[i] = i
+
+    # 모든 간선을 담을 리스트와, 최종 비용을 담을 변수
+    edges = []
+    result = 0
+
+    # 간선을 비용순으로 정렬
+    edges.sort()
+    last = 0  # 최소 신장 트리에 포함되는 간선 중에서 가장 비용이 큰 간선
+
+    for cost, a, b in edges:
+        if find_parent(parent, a) != find_parent(parnet, b):
+            union_parent(parent=parent, a, b)
+            result += cost
+            last = cost
+    return result - last
+#커리쿨럼
+def curriculum(v, ): #topology sort
+    indegree = [0] * (v+1)
+    graph = collections.defaultdict(list)
+    time = [0] * (v+1)
+    for x in data:
+        indegree[i] += 1
+
+        graph[x].append(i)
+
+
+    def topology():
+        result = copy.deepcopy(time)
+        q = deque()
+
+        for i in range(1, v+1):
+            if indegree[i] == 0:
+                q.append(i)
+
+        while q:
+            now = q.popleft()
+            for i in graph[now]:
+                result[i] = max(result[i], result[now] + time[i])
+                indegree[i] -= 1
+                if indegree[i] == 0:
+                    q.append(i)
+
+            # 위상 정렬을 수행한 결과 출력
+        for i in range(1, v + 1):
+            print(result[i])
