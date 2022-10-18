@@ -2461,3 +2461,264 @@ print(solution7([
 "2016-09-15 21:00:00.966 0.381s",
 "2016-09-15 21:00:02.066 2.62s"
 ]))
+
+
+# 음료수 얼려먹기
+def freezing_drink(grid):  # 총 0그룹이 몇 개인지
+    visited = [[False] * len(grid[0]) for _ in range(len(grid))]
+
+    def dfs(x, y, visited):
+        visited[x][y] = True
+        dx = [0, 0, 1, -1]
+        dy = [-1, 1, 0, 0]
+        for i in range(4):
+            if 0 <= x + dx[i] < len(grid) and 0 <= y + dy[i] < len(grid[0]):
+                nx = x + dx[i]
+                ny = y + dy[i]
+                if visited[nx][ny] == False and grid[nx][ny] == 0:
+                    dfs(nx, ny, visited)
+
+    count = 0
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if visited[i][j] == False and grid[i][j] == 0:
+                dfs(i, j, visited)
+                count += 1
+    return count
+
+
+print(freezing_drink([[0, 0, 1, 1, 0], [0, 0, 0, 1, 1], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0]]))
+
+#미로 탈출
+import collections
+
+
+def maze(n, m, grid):
+    # 최소 dp 괴물 0
+
+    def bfs(x, y):
+        queue = collections.deque()
+        queue.append((x, y))
+        dx = [-1, 1, 0, 0]
+        dy = [0, 0, 1, -1]
+        while queue:
+            x, y = queue.popleft()
+            for i in range(4):
+                nx = x + dx[i]
+                ny = y + dy[i]
+
+                if nx < 0 or nx >= n or ny < 0 or ny >= m:
+                    continue
+                if grid[nx][ny] == 0:
+                    continue
+                if grid[nx][ny] == 1:
+                    grid[nx][ny] = grid[x][y] + 1
+                    queue.append((nx, ny))
+        return grid[n - 1][m - 1]
+
+    return bfs(0, 0)
+
+
+print(maze(3, 3, [[1, 1, 0], [0, 1, 0], [0, 1, 1]]))
+print(maze(5, 6, [[1, 0, 1, 0, 1, 0], [1, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 1], [1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1]]))
+
+#정렬
+#위에서 아래로
+def uptodown(array):
+    return sorted(array, reverse=True)
+
+print(uptodown([15, 27, 12]))
+
+#성적이 낮은 학생
+def grade(array):
+    array.sort(key = lambda x:x[1])
+    array = [i[0] for i in array]
+    return array
+
+print(grade([("홍길동", 95), ("이순신", 77)]))
+
+#두 배열의 원소 교체
+def exchange(n, k, array1, array2):
+    array1.sort()
+    array2.sort(reversed =True)
+    for i in range(k):
+        if array1[i] < array2[i]:
+            array1[i], array2[i] = array1[i], array2[i]
+
+        else:
+            break
+    return sum(array1)
+
+#이진 탐색
+#빠르게 입력 받기
+# import sys
+# input_data = sys.stdin.readline().rstrip()
+
+#부품찾기
+import bisect
+def binary_search(array, target, start, end):
+    while start <= end:
+        mid = (start + end) // 2
+        if array[mid] == target:
+            return mid
+        elif array[mid] > target:
+            end = mid - 1
+        else:
+            start = mid + 1
+    return None
+def find(n, n_list, m, m_list):
+    n_list.sort()
+    m_list.sort()
+
+    for k in m_list:
+        i = bisect.bisect_left(k, array, 0, n-1)
+        if i != None:
+            print("Yes", end = ' ')
+        else:
+            print('No', end = ' ')
+
+    return
+    array = set(n_list)
+    for k in m_list:
+        if k in array:
+            print("Yes", end=' ')
+        else:
+            print('No', end=' ')
+
+print(find(5, [8,3,7,9,2], 3, [5,7,9]))
+#떡볶이 떡
+def tteokbokki(n, m, t):
+    t.sort()
+    start, end = 0, len(t) - 1
+    while start<=end:
+        mid = (start + end) - 1
+        result = 0
+        for i in t:
+            result += i - mid > 0
+        if result == m:
+            return mid
+        elif result > m:
+            start = mid + 1
+        else:
+            end = mid - 1
+    return mid
+
+print(tteokbokki(4, 6, [19,15,10,17]))
+
+#다이나믹 프로그래밍
+#1로 만들기
+#개미전사
+#바닥공사
+#효율적인 화폐구성
+
+def make1(N):
+    dp = [0] * (N+1)
+
+    for i in range(2, N+1):
+
+        dp[i] = dp[i-1] + 1
+        if i % 2 == 0:
+            dp[i] = min(dp[i], dp[i // 2] + 1)
+        if i % 3 == 0:
+            dp[i] = min(dp[i], dp[i // 3] + 1)
+
+        if i % 5 == 0:
+            dp[i] = min(dp[i], dp[i // 5] + 1)
+
+    return dp[N+1]
+#개미전사
+def ant(array):
+    dp = [0] * len(array+1)
+
+    for i in range(len(array)+1):
+        if i == 1:
+            dp[i] = array[i-1]
+            continue
+        dp[i] = max(dp[i-1], dp[i-2] + array[i-1])
+    return dp[len(array)]
+
+#바닥공사
+def floor(N):
+    #1x2 2x1 2x2 - 바닥을 채우는 모든 경우의 수
+    dp = [0] * (N+1)
+    dp[1] = 1
+    dp[2] = 3
+    for i in range(3,N):
+        dp[i] = dp[i-2] + 2*dp[i-1]
+    return dp[N]
+
+print(floor(3))# 5
+
+#다익스트라
+import heapq
+def dijkstra(n, k, start, graph):
+    grid = collections.defaultdict()
+    for x, y, z in graph:
+        grid[x].append((y, z))
+
+    heap = [(0, start)]
+    distance = [0] * n
+    while heap:
+        dist, v = heapq.heappop(heap)
+        for y, z in graph[v]:
+            distance[y] += z + dist
+            heapq.heappush(heap, (z+dist, y))
+
+    return distance
+
+
+print(dijkstra(6, 11, 1, [[1,2,2], [1,3,5], [1,4,1],[2,3,3],[2,4,2],[3,2,3],[3,6,5],[4,3,3],[4,5,1],[5,3,1],[5,6,2]]))
+#모든 노드로 가기 위한 최단 거리
+def floydwarshalle(n, k, graph):
+    grid = collections.defaultdict(list)
+    for x, y, z in graph:
+        grid[x].append((y, z))
+    dist = [[10001] * (n+1) for _ in range(n+1)]
+
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+    return dist
+
+
+print(floydwarshalle(4, 7, [[1,2,4],[1,4,6],[2,1,3],[2,3,7],[3,1,5],[3,4,4],[4,3,2]]))
+
+#미래도시
+def future(n,m, graph, x, k):#a가 1번에서  k 번회사를 거쳐 x 번 회사로 가는 최소 이동 시간
+    #floyed warsharl
+    grid = [[10001]  * (n+1) for _ in range(n+1)]
+
+    grap = collections.defaultdict(list)
+    for x, y in graph:
+        grap[x].append(y)
+
+    for k in range(n+1):
+        for i in range(n+1):
+            for j in range(n+1):
+                grap[i][j] = min(grap[i][j], grap[i][k] + grap[k][j])
+
+    return graph[1][k] + graph[k][x]
+
+
+print(future(5,7,[[1,2],[1,3],[1,4],[2,4],[3,4],[3,5],[4,5]],4,5))
+print(future(4,2,[[1,3],[2,4]],3,4))
+
+
+def telegram(n, m, c, graph):
+    #c에서 보낸 베시지를 받는 도시의 총 개수와 총 걸리는 시간
+    grap = collections.defaultdict(list)
+    for x, y, z in graph:
+        grap[x].append((y, z))
+    distance = [-1] * (n+1)
+    distance[c] = 0
+    heap = [(0, c)]
+    while heap:
+        dist, v = heapq.heappop(grap)
+        for w, d in grap[v]:
+            distance[w] = dist + d
+            heapq.heappush(heap, ((dist+d, w)))
+
+
+
+print(telegram(3,2,1,[[1,2,4],[1,3,2]]))
