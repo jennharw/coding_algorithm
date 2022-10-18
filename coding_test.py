@@ -2463,6 +2463,228 @@ print(solution7([
 "2016-09-15 21:00:02.066 2.62s"
 ]))
 
+#이코테
+#3장 그리디
+
+#거스름돈
+def changes(n):
+    count = 0
+    coin_types = [500, 100, 50, 10]
+
+    for coin in coin_types:
+        count += n // coin
+        n %= coin
+    return count
+
+print(changes(1260))
+
+#큰수의 법칙
+# n = int(input())
+# plans = input().split()
+# n, m, k = map(int, input().split())
+# data = list(map(int, input().split()))
+def principle_of_big_number(n, m, k, data):
+    data.sort()
+    first = data[n-1]
+    second = data[n-2]
+
+    count = int(m / (k+1)) * k
+    count += m % (k+1)
+
+    result = 0
+    result += count * first
+    result += (m - count) * second
+    return result
+
+    # result = 0
+    # while True:
+    #     for i in range(k):
+    #         if m == 0:
+    #             break
+    #         result += first
+    #         m -= 1
+    #     if m == 0:
+    #         break
+    #     result += second
+    #     m -= 1
+    return result
+
+print(principle_of_big_number(5,8,3,[2,4,5,4,6]))
+
+#숫자게임
+def card_game(n, m, data):
+    result = 0
+    for i in range(n):
+        min_value = min(data[i])
+        result = max(result, min_value)
+    return result
+
+print(card_game(3, 3, [[3,1,2],[4,1,4],[2,2,2]]))
+print(card_game(2, 4, [[7,3,1,8],[3,3,3,4]]))
+
+#1이 될 때까지
+def until_1(n, k):
+    result = 0
+
+    while True:
+        target = (n // k) * k
+        result += (n - target)
+
+        n = target
+        if n < k:
+            break
+        result += 1
+        n //= k
+
+    result += (n - 1)
+    return result
+
+print(until_1(25, 5))
+print(until_1(17, 4))
+
+
+#4장 구현
+def LRUD(n, grid):
+    #무시 공간 밖 시작 1,1
+    dic = {'L':0,
+           'R':1,
+           'U':2,
+           'D':3}
+    dx = [-1,1,0,0]
+    dy = [0,0,-1,1]
+    x, y = 0, 0
+    for g in grid:
+        if 0 <= x + dx[dic[g]] < n and 0 <= y + dy[dic[g]] < n:
+            x += dx[dic[g]]
+            y += dy[dic[g]]
+
+    return y+1, x+1
+
+print(LRUD(5, 'RRRUDD'))
+
+def time(n):
+    coun = 0
+    for i in range(n+1):
+        for j in range(60):
+            for k in range(60):
+                if '3' in str(i) + str(j) + str(k):
+                    count += 1
+    return count
+
+print(time(5))
+
+
+def knight(start):
+    steps = [(2, 1), (2, -1), (-2, 1), (-2, -1), (1, 2), (-1, 2), (1, -2), (-1, 2)]
+
+    x = int(start[1]) - 1
+    y = ord(start[0]) - 97
+
+    count = 0
+    for i in range(8):
+        if 0 <= x + steps[i][0] < 8 and 0 <= y + steps[i][1] < 8:
+            count += 1
+    return count
+
+
+print(knight('a1'))
+print(knight('c2'))
+
+def developing_games(n, m, start, grid):
+    #visited = [[False] * n for _ in range(m)]
+    visited = [list(i) for  i in grid]
+
+    dict = {
+        '0':(-1,0),
+        '1':(0,-1),
+        '2':(1,0),
+        '3':(0,1)
+    }
+
+    x = start[0]
+    y = start[1]
+    d = start[2]
+    count = 0
+    result = 0
+    while True:
+
+        if visited[x + dict[d][0]][y + dict[d][1]] == False:
+            x += dict[d][0]
+            y += dict[d][1]
+            visited[x + dict[d][0]][y + dict[d][1]] = 1
+            count = 0
+        else:
+            d = (d + 1) % 4
+            count += 1
+        if count == 4:
+            x = x - dict[d][0]
+            y = y - dict[d][1]
+
+            if x < 0 or x > n or y < 0 or y > m or  grid[x][y] == 1 :
+
+                return result
+
+        result += 1
+    return result
+
+
+#5장 DFS/BFS
+def implement_dfs(graph):
+
+    def dfs(graph, v, visited):
+        visited[v] = True
+        print(v, end=' ')
+        for i in graph[v]:
+            if not visited[i]:
+                dfs(graph, i, visited)
+
+    visited = [False] * 9
+    dfs(graph, 1, visited)
+
+print(implement_dfs(graph = [
+  [],
+  [2, 3, 8],
+  [1, 7],
+  [1, 4, 5],
+  [3, 5],
+  [3, 4],
+  [7],
+  [2, 6, 8],
+  [1, 7]
+]))
+
+def implement_bfs(graph):
+    def bfs(graph, v, visited):
+
+        queue = collections.deque([start])
+        visited[start] = True
+        while queue:
+            v = queue.popleft()
+            print(v, end= ' ')
+            for i in graph[v]:
+                if not visited[i]:
+                    queue.append(i)
+                    visited[i] = True
+
+    bfs(graph, 1, visited)
+
+print(implement_bfs(graph = [
+  [],
+  [2, 3, 8],
+  [1, 7],
+  [1, 4, 5],
+  [3, 5],
+  [3, 4],
+  [7],
+  [2, 6, 8],
+  [1, 7]
+]))
+
+#음료수 얼려먹기
+
+
+
+
 
 # 음료수 얼려먹기
 def freezing_drink(grid):  # 총 0그룹이 몇 개인지
