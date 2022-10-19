@@ -3064,48 +3064,91 @@ def coprime(v, e, graph): #노드의 개수, 간선의 개수, 그래프
 
 print(coprime(6,4,[[1,4],[2,3],[2,4],[5,6]]))
 
+#서로소 집합 알고리즘을 이용한 cycle 판별
+def is_cycle(v, e, graph):
+    parent = [0] * (v+1)
+
+    for i in range(1, v+1):
+        parent[i] = i
+    cycle = False
+    for a, b in graph:
+        if find_parent(parent, a) == find_parent(parent, b):
+            cycle = True
+            break
+        else:
+            union_parent(parent, a, b)
+    if cycle:
+        print("사이클이 발생")
+    else:
+        print("사이클이 발생하지 않았습니다.")
+
+print(is_cycle(3, 3, [[1,2],[1,3],[2,3]]))
+
+#신장트리 : 하나의 그래프가 있을 때 모든 노드를 포함하면서 사이클이 존재하지 않는 부분 그래프
 #크루스칼 알고리즘
+def cruskal_algorithm(v, e, edges):
+    edges.sort(key=lambda x:x[2])
+    parent = [0] * (v+1)
+    for i in range(1, v+1):
+        parent[i] = i
+    result = 0
+    for edge in edges:
+        a, b, cost = edge
+        if find_parent(parent, a) != find_parent(parent, b):
+            union_parent(parent, a, b)
+            result += cost
+    return result
 
-#위상 정렬
+print(cruskal_algorithm(7,9,[[1,2,29],[1,5,75],[2,3,35],[2,6,34],[3,4,7],[4,6,23],[4,7,13],[5,6,53],[6,7,25]]))
 
-#위상정렬
-진입차수확인
+
+#위상 정렬, 진입차수 확인
 # 모든 노드에 대한 진입차수는 0으로 초기화
-indegree = [0] * (v + 1)
+def topology_sort(v, e, edges):
+    indegree = [0] * (v + 1)
+    graph = collections.defaultdict(list)
+    for a, b in edges:
+        indegree[b] += 1
+        graph[a].append(b)
 
-for a, b in graph:
-	graph[a].append(b)
-	indegree[a] += 1
+    result = []
+    q = collections.deque()
+    for i in range(1, v + 1):
+        if indegree[i] == 0:
+            q.append(i)
 
-def topology_sort():
-	result = []
-	q = deque()
-	for i in range(1, v+1):
-		now = q.popleft()
-		result.append(now)
-		for i in graph[now]:
-			indegree[i] -= 1
-			if indegree[i] == 0:
-				q.append(i)
-	for i in result:
-        print(i, end=' ')
+    for i in range(1, v + 1):
+        now = q.popleft()
+        result.append(now)
+        for j in graph[now]:
+            indegree[j] -= 1
+            if indegree[j] == 0:
+                q.append(j)
+    return result
 
-topology_sort()
+
+print(topology_sort(7, 8, [[1, 2], [1, 5], [2, 3], [2, 6], [3, 4], [4, 7], [5, 6], [6, 4]]))
 
 #팀결성
-def teammaking(n, m, operations):
-    parent = [0] * (n+1)
+def team_up(n, m, operations):
+    parent = [0] * (n + 1)
+    for i in range(1, n + 1):
+        parent[i] = i
+
     for oper, a, b in operations:
         if oper == 0:
             union_parent(parent, a, b)
         else:
-            if find_parent(parent=parent, a) == find_parent(parent, b):
+            if find_parent(parent, a) == find_parent(parent, b):
                 print("y")
             else:
                 print("n")
 
-#도시분할
-def divide_city(v, e, edges):
+
+print(team_up(7, 8, [[0, 1, 3], [1, 1, 7], [0, 7, 6], [1, 7, 1], [0, 3, 7], [0, 4, 2], [0, 1, 1], [1, 1, 1]]))
+
+#도시분할 유지비 최소로
+def divide_city(v, e, edges): #2개의 신장트리로 나누기, last 빼기
     parent = [0] * (v + 1)  # 부모 테이블 초기화
 
     # 부모 테이블상에서, 부모를 자기 자신으로 초기화
@@ -3113,46 +3156,53 @@ def divide_city(v, e, edges):
         parent[i] = i
 
     # 모든 간선을 담을 리스트와, 최종 비용을 담을 변수
-    edges = []
     result = 0
 
     # 간선을 비용순으로 정렬
-    edges.sort()
+    edges.sort(key = lambda x : x[2])
     last = 0  # 최소 신장 트리에 포함되는 간선 중에서 가장 비용이 큰 간선
 
-    for cost, a, b in edges:
-        if find_parent(parent, a) != find_parent(parnet, b):
-            union_parent(parent=parent, a, b)
+    for a, b, cost in edges:
+        if find_parent(parent, a) != find_parent(parent, b):
+            union_parent(parent, a, b)
             result += cost
             last = cost
     return result - last
-#커리쿨럼
-def curriculum(v, ): #topology sort
+
+print(divide_city(7,12,[[1,2,3],[1,3,2],[3,2,1],[2,5,2],[3,4,4],[7,3,6],[5,1,5],[1,6,2],[6,4,1],[6,5,3],[4,5,3],[6,7,4]]))
+
+
+#커리큘럼
+def curriculum(v, edges): #topology sort , N 개의 강의를 수강하는 데 걸리는 최소 시간
     indegree = [0] * (v+1)
     graph = collections.defaultdict(list)
     time = [0] * (v+1)
-    for x in data:
+    for i in range(1, v+1):
+        time[i] = edges[i][0]
         indegree[i] += 1
+        data = edges[i][1:-1]
 
-        graph[x].append(i)
+        for x in data:
+            graph[x].append(i)
 
+    result = copy.deepcopy(time)
+    q = collections.deque()
 
-    def topology():
-        result = copy.deepcopy(time)
-        q = deque()
+    for i in range(1, v+1):
+        if indegree[i] == 0:
+            q.append(i)
 
-        for i in range(1, v+1):
+    while q:
+        now = q.popleft()
+        for i in graph[now]:
+            result[i] = max(result[i], result[now] + time[i])
+            indegree[i] -= 1
             if indegree[i] == 0:
                 q.append(i)
 
-        while q:
-            now = q.popleft()
-            for i in graph[now]:
-                result[i] = max(result[i], result[now] + time[i])
-                indegree[i] -= 1
-                if indegree[i] == 0:
-                    q.append(i)
+    # 위상 정렬을 수행한 결과 출력
+    return result
 
-            # 위상 정렬을 수행한 결과 출력
-        for i in range(1, v + 1):
-            print(result[i])
+print(curriculum(5, [[10,-1],[10,1,-1],[4,1,-1],[4,3,1,-1],[3,3,-1]]))
+#각 강의시간과 그 강의를 듣기 위해 먼저 들어야 하는 강의들의 번호
+#N개의 강의를 수강하기까지 걸리는 최소 시간
