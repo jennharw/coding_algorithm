@@ -3218,4 +3218,54 @@ print(curriculum(5, [[10, -1], [10, 1, -1], [4, 1, -1], [4, 3, 1, -1], [3, 3, -1
 #chap 11 그리디
 
 #모험가길드
+def explore_guild(n, data):
+    result = 0
+    count = 0
+    data.sort()
+
+    for i in data:
+        count += 1
+        if count >= i:
+            result += 1
+            count = 0
+    return result
+print(explore_guild(5,[2,3,1,2,2]))   #2
+
+#곱하기 혹은 더하기
+
+def add_or_times(data):
+    result = int(data[0])
+    for i in data[1:]:
+        i = int(i)
+        if i <= 1 or result <= 1:
+            result += i
+        else:
+            result *= i
+    return result
+
+
+print(add_or_times('02984')) #576
+print(add_or_times('576')) #210
+
+#문자열 뒤집기
+def convertzeros(data):
+    count0 = 0
+    count1 = 0
+    if data[0] == '0':
+        count1 += 1 #1로 뒤집어
+    else:
+        count0 += 1
+
+    for i in range(1,len(data)):
+        if data[i] != data[i-1]:
+            if data[i] == '1':
+                count0 += 1
+            else:
+                count1 += 1
+    return min(count0, count1)
+
+print(convertzeros('0001100')) # 1
+
+#만들 수 없는 금액
+# def cannotmakemoney(data):
 
