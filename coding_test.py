@@ -3064,52 +3064,57 @@ def coprime(v, e, graph): #노드의 개수, 간선의 개수, 그래프
 
 print(coprime(6,4,[[1,4],[2,3],[2,4],[5,6]]))
 
-#서로소 집합 알고리즘을 이용한 cycle 판별
-def is_cycle(v, e, graph):
+#서로소 집합을 이용한 사이클 판별
+def is_cycle(v, e, data):
     parent = [0] * (v+1)
 
     for i in range(1, v+1):
         parent[i] = i
+
     cycle = False
-    for a, b in graph:
-        if find_parent(parent, a) == find_parent(parent, b):
+
+    for j in range(len(data)):
+        if find_parent(parent, data[j][0]) == find_parent(parent, data[j][1]):
             cycle = True
-            break
         else:
-            union_parent(parent, a, b)
+            union_parent(parent, data[j][0], data[j][1])
+
     if cycle:
-        print("사이클이 발생")
+        print('사이클이 발생했습니다')
     else:
-        print("사이클이 발생하지 않았습니다.")
+        print('사이클이 발생하지 않았습니다')
 
 print(is_cycle(3, 3, [[1,2],[1,3],[2,3]]))
 
-#신장트리 : 하나의 그래프가 있을 때 모든 노드를 포함하면서 사이클이 존재하지 않는 부분 그래프
+#신장트리
 #크루스칼 알고리즘
-def cruskal_algorithm(v, e, edges):
-    edges.sort(key=lambda x:x[2])
+def kruskal(v, e, edges):
     parent = [0] * (v+1)
     for i in range(1, v+1):
         parent[i] = i
     result = 0
-    for edge in edges:
-        a, b, cost = edge
+
+    edges.sort(key=lambda x:x[2])
+
+    for a, b, cost in edges:
         if find_parent(parent, a) != find_parent(parent, b):
             union_parent(parent, a, b)
             result += cost
+
     return result
 
-print(cruskal_algorithm(7,9,[[1,2,29],[1,5,75],[2,3,35],[2,6,34],[3,4,7],[4,6,23],[4,7,13],[5,6,53],[6,7,25]]))
+print(kruskal(7, 9, [[1,2,29], [1,5,75],[2,3,35],[2,6,34],[3,4,7],[4,6,23],[4,7,13],[5,6,53],[6,7,25]]))
 
 
-#위상 정렬, 진입차수 확인
-# 모든 노드에 대한 진입차수는 0으로 초기화
-def topology_sort(v, e, edges):
+#위상 정렬
+def topology_sort(v, e, data):
+    # 진입차수확인
+    # 모든 노드에 대한 진입차수는 0으로 초기화
     indegree = [0] * (v + 1)
     graph = collections.defaultdict(list)
-    for a, b in edges:
-        indegree[b] += 1
+    for a, b in data:
         graph[a].append(b)
+        indegree[b] += 1
 
     result = []
     q = collections.deque()
@@ -3117,24 +3122,25 @@ def topology_sort(v, e, edges):
         if indegree[i] == 0:
             q.append(i)
 
-    for i in range(1, v + 1):
+    while q:
         now = q.popleft()
         result.append(now)
-        for j in graph[now]:
-            indegree[j] -= 1
-            if indegree[j] == 0:
-                q.append(j)
+        for i in graph[now]:
+            indegree[i] -= 1
+            if indegree[i] == 0:
+                q.append(i)
+
     return result
 
 
 print(topology_sort(7, 8, [[1, 2], [1, 5], [2, 3], [2, 6], [3, 4], [4, 7], [5, 6], [6, 4]]))
 
 #팀결성
-def team_up(n, m, operations):
-    parent = [0] * (n + 1)
-    for i in range(1, n + 1):
-        parent[i] = i
-
+#팀결성
+def make_team(n, m, operations):
+    parent = [0] * (n+1)
+    for i in range(0, n+1):
+      parent[i] = i
     for oper, a, b in operations:
         if oper == 0:
             union_parent(parent, a, b)
@@ -3144,10 +3150,9 @@ def team_up(n, m, operations):
             else:
                 print("n")
 
+print(make_team(7, 8, [[0,1,3],[1, 1, 7],[0,7,6],[1,7,1],[0,3,7],[0, 4,2],[0,1,1],[1,1,1]]))
 
-print(team_up(7, 8, [[0, 1, 3], [1, 1, 7], [0, 7, 6], [1, 7, 1], [0, 3, 7], [0, 4, 2], [0, 1, 1], [1, 1, 1]]))
-
-#도시분할 유지비 최소로
+#도시분할
 def divide_city(v, e, edges): #2개의 신장트리로 나누기, last 빼기
     parent = [0] * (v + 1)  # 부모 테이블 초기화
 
@@ -3171,27 +3176,28 @@ def divide_city(v, e, edges): #2개의 신장트리로 나누기, last 빼기
 
 print(divide_city(7,12,[[1,2,3],[1,3,2],[3,2,1],[2,5,2],[3,4,4],[7,3,6],[5,1,5],[1,6,2],[6,4,1],[6,5,3],[4,5,3],[6,7,4]]))
 
-
 #커리큘럼
-def curriculum(v, edges): #topology sort , N 개의 강의를 수강하는 데 걸리는 최소 시간
-    indegree = [0] * (v+1)
+import copy
+
+def curriculum(v, edges):  # topology sort , N 개의 강의를 수강하는 데 걸리는 최소 시간
+    indegree = [0] * (v + 1)
     graph = collections.defaultdict(list)
-    time = [0] * (v+1)
-    for i in range(1, v+1):
-        time[i] = edges[i][0]
-        indegree[i] += 1
-        data = edges[i][1:-1]
+    time = [0] * (v + 1)
+    for i in range(1, v + 1):
+        time[i] = edges[i - 1][0]
+        data = edges[i - 1][1:-1]
 
         for x in data:
+            indegree[i] += 1
             graph[x].append(i)
 
     result = copy.deepcopy(time)
     q = collections.deque()
 
-    for i in range(1, v+1):
+    for i in range(1, v + 1):
         if indegree[i] == 0:
             q.append(i)
-
+    print(q, time, result, indegree)
     while q:
         now = q.popleft()
         for i in graph[now]:
@@ -3201,8 +3207,15 @@ def curriculum(v, edges): #topology sort , N 개의 강의를 수강하는 데 �
                 q.append(i)
 
     # 위상 정렬을 수행한 결과 출력
-    return result
+    return result[1:]
 
-print(curriculum(5, [[10,-1],[10,1,-1],[4,1,-1],[4,3,1,-1],[3,3,-1]]))
-#각 강의시간과 그 강의를 듣기 위해 먼저 들어야 하는 강의들의 번호
-#N개의 강의를 수강하기까지 걸리는 최소 시간
+
+print(curriculum(5, [[10, -1], [10, 1, -1], [4, 1, -1], [4, 3, 1, -1], [3, 3, -1]]))
+# 각 강의시간과 그 강의를 듣기 위해 먼저 들어야 하는 강의들의 번호
+# N개의 강의를 수강하기까지 걸리는 최소 시간
+
+#Part3 실전
+#chap 11 그리디
+
+#모험가길드
+
