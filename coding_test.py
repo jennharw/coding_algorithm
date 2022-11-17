@@ -1092,11 +1092,11 @@ class Codec:
 
         while queue:
             node = queue.popleft()
-            if nodes[index] is not '#':
+            if nodes[index] != '#':#is not '#':
                 node.left = TreeNode(int(nodes[index]))
                 queue.append(node.left)
             index += 1
-            if node[index] is not "#":
+            if node[index] != '#':# is not "#":
                 node.right = TreeNode(int(nodes[index]))
                 queue.append(node.right)
             index += 1
@@ -1835,7 +1835,7 @@ def intersection(nums1, nums2):
   while i < len(nums1) and j < len(nums2):
     if nums1[i] > nums2[j]:
       j += 1
-    elif nums1[i] < nums2[2]:
+    elif nums1[i] < nums2[j]:
       i += 1
     else:
       result.add(nums1[i])
@@ -1943,7 +1943,7 @@ print(validate_utf8(data = [235,140,4]))
 
 #1비트의 개수
 def number_of_1bits(n):
-    return bin(n).count('1')
+    return n.count('1')#str(bin(int(n))).count('1')
 
 print(number_of_1bits(n = "00000000000000000000000000001011"))
 print(number_of_1bits(n = "00000000000000000000000010000000"))
@@ -2563,7 +2563,7 @@ def LRUD(n, grid):
 print(LRUD(5, 'RRRUDD'))
 
 def time(n):
-    coun = 0
+    count = 0
     for i in range(n+1):
         for j in range(60):
             for k in range(60):
@@ -2654,7 +2654,7 @@ print(implement_dfs(graph = [
 ]))
 
 def implement_bfs(graph):
-    def bfs(graph, v, visited):
+    def bfs(graph, start, visited):
 
         queue = collections.deque([start])
         visited[start] = True
@@ -2665,7 +2665,7 @@ def implement_bfs(graph):
                 if not visited[i]:
                     queue.append(i)
                     visited[i] = True
-
+    visited = [0] * 9
     bfs(graph, 1, visited)
 
 print(implement_bfs(graph = [
